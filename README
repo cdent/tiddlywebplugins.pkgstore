@@ -1,27 +1,12 @@
-Read and write tiddlers and related to a package resources.
+Read and write tiddlers, bags, and recipes to a package's resources.
 
-For now, simply based on the text store.
+For now the store is a slightly modified version of the text store.
+The store_root is set as a resource_filename.
 
-The basic ideas are:
+This is a fundamental building block for improving instancer.
+As store can be set as read only, or read write. A developer
+would build a package's resources by using a store that can be
+written to, while an instance script or 'twanager update' would
+use a read only store.
 
-* Put a store_root in package resources
-* Write tiddlers, bags and recipes there.
-* Later allow them to be read from there when:
-  * `twanager update` runs, updating an instance
-  * If diststore is being used, let some bags "live" in the package.
-
-There are a few different goals to be satisfied here:
-
-Replace at least some parts of twp.twimport and twp.instancer and the
-bizarre fact that the 'update' command is in tiddlywebwiki with a
-concerted whole that makes some measure of sense.
-
-That functionality is:
-
-* For a developer make it easy to get resources into a package
-  in a structured way (what './cacher' does in many plugins).
-* Make instance commands (like twinstance and tiddlyspace) easy to
-  create and use.
-* Have a 'twanager update' that is more clever.
-
-
+Currently considered experimental, so not releasing to PyPI.
