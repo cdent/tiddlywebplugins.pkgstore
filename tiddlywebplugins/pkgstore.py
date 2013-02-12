@@ -43,7 +43,25 @@ class Store(TextStore):
             raise StoreMethodNotImplemented('store is read only')
         super(Store, self).tiddler_put(tiddler)
 
+    def recipe_delete(self, recipe):
+        if self.read_only:
+            raise StoreMethodNotImplemented('store is read only')
+        super(Store, self).recipe_delete(recipe)
+
+    def bag_delete(self, bag):
+        if self.read_only:
+            raise StoreMethodNotImplemented('store is read only')
+        super(Store, self).bag_delete(bag)
+
+    def tiddler_delete(self, tiddler):
+        if self.read_only:
+            raise StoreMethodNotImplemented('store is read only')
+        super(Store, self).tiddler_delete(tiddler)
+
     def user_put(self, user):
+        raise StoreMethodNotImplemented('store does not handle users')
+
+    def user_delete(self, user):
         raise StoreMethodNotImplemented('store does not handle users')
 
     def user_get(self, user):

@@ -6,7 +6,7 @@ from tiddlyweb.config import config
 
 from tiddlyweb.store import Store
 
-from tiddlyweb.store import StoreMethodNotImplemented
+from tiddlyweb.store import StoreMethodNotImplemented, StoreError
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.tiddler import Tiddler
 
@@ -68,3 +68,7 @@ def test_get_tiddler():
     assert tiddler.text == 'oh hi'
 
     py.test.raises(StoreMethodNotImplemented, 'rstore.put(tiddler)')
+    py.test.raises(StoreMethodNotImplemented, 'rstore.delete(tiddler)')
+
+    wstore.delete(tiddler)
+    py.test.raises(StoreError, 'rstore.get(tiddler)')
