@@ -8,6 +8,7 @@ try:
 except ImportError:
         from tiddlywebplugins.utils import resource_filename
 
+from tiddlyweb.store import StoreMethodNotImplemented
 from tiddlyweb.stores.text import Store as TextStore
 
 class Store(TextStore):
@@ -26,6 +27,27 @@ class Store(TextStore):
         if self.read_only:
             return
         super(Store, self)._init_store()
+
+    def recipe_put(self, recipe):
+        if self.read_only:
+            raise StoreMethodNotImplemented('store is read only')
+        super(Store, self).recipe_put(recipe)
+
+    def bag_put(self, bag):
+        if self.read_only:
+            raise StoreMethodNotImplemented('store is read only')
+        super(Store, self).bag_put(bag)
+
+    def tiddler_put(self, tiddler):
+        if self.read_only:
+            raise StoreMethodNotImplemented('store is read only')
+        super(Store, self).tiddler_put(tiddler)
+
+    def user_put(self, user):
+        raise StoreMethodNotImplemented('store does not handle users')
+
+    def user_get(self, user):
+        raise StoreMethodNotImplemented('store does not handle users')
 
 
 def init(config):

@@ -1,10 +1,12 @@
 
 import os
 import shutil
+import py.test
 from tiddlyweb.config import config
 
 from tiddlyweb.store import Store
 
+from tiddlyweb.store import StoreMethodNotImplemented
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.tiddler import Tiddler
 
@@ -15,10 +17,14 @@ def setup_module(module):
     except:  # not there
         pass
     environ = {'tiddlyweb.config': config}
-    store = Store('tiddlywebplugins.pkgstore',
+    wstore = Store('tiddlywebplugins.pkgstore',
             {'package': 'testpackage', 'read_only': False},
             environ)
-    module.store = store
+    module.wstore = wstore
+    rstore = Store('tiddlywebplugins.pkgstore',
+            {'package': 'testpackage', 'read_only': True},
+            environ)
+    module.rstore = rstore
 
 
 def test_base_structure():
@@ -34,7 +40,7 @@ def test_base_structure():
 
 def test_put_bag():
     bag = Bag('testone')
-    store.put(bag)
+    wstore.put(bag)
     assert os.path.exists('testpackage/resources/store/bags/testone')
     assert os.path.isdir('testpackage/resources/store/bags/testone')
 
@@ -42,7 +48,7 @@ def test_put_bag():
 def test_put_tiddler():
     tiddler = Tiddler('tiddlerone', 'testone')
     tiddler.text = 'oh hi'
-    store.put(tiddler)
+    wstore.put(tiddler)
     assert os.path.exists(
             'testpackage/resources/store/bags/testone/tiddlers/tiddlerone')
     assert os.path.isdir(
@@ -55,5 +61,10 @@ def test_put_tiddler():
 
 def test_get_tiddler():
     tiddler = Tiddler('tiddlerone', 'testone')
-    tiddler = store.get(tiddler)
+    tiddler = wstore.get(tiddler)
     assert tiddler.text == 'oh hi'
+
+    tiddler = rstore.get(tiddler)
+    assert tiddler.text == 'oh hi'
+
+    py.test.raises(StoreMethodNotImplemented, 'rstore.put(tiddler)')
