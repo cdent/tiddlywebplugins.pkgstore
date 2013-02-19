@@ -1,12 +1,12 @@
 Read and write tiddlers, bags, and recipes to a package's resources.
 
-For now the store is a slightly modified version of the text store.
-The store_root is set as a resource_filename.
+For use with `TiddlyWeb <http://tiddlyweb.com>`_ plugins which need
+to have access to a predefined set of bags, recipes and tiddlers.
 
-This is a fundamental building block for improving instancer.
-As store can be set as read only, or read write. A developer
-would build a package's resources by using a store that can be
-written to, while an instance script or 'twanager update' would
-use a read only store.
+The store is a slightly modified version of the default text store which
+can be accessed read+write to build the resources during development,
+or read only to use the resources during instance creation or other
+situations.
 
-Currently considered experimental, so not releasing to PyPI.
+Copyright 2013, Chris Dent
+BSD License
