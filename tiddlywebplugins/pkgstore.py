@@ -74,7 +74,3 @@ class Store(TextStore):
 
     def user_get(self, user):
         raise StoreMethodNotImplemented('store does not handle users')
-
-
-def init(config):
-    pass
