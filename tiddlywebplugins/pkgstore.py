@@ -3,6 +3,8 @@ Use package resources of a package as a place to store
 tiddlers etc.
 """
 
+import os
+
 try:    
         from pkg_resources import resource_filename
 except ImportError:
@@ -20,6 +22,12 @@ class Store(TextStore):
         package = store_config['package']
         self.read_only = store_config.get('read_only', True)
         store_root_base = resource_filename(package, 'resources')
+        if not self.read_only:
+            try:
+                os.makedirs(store_root_base)
+            except OSError, exc:
+                if exc.errno == 17:
+                    pass
         store_config['store_root'] = '%s/store' % store_root_base
         super(Store, self).__init__(store_config, environ)
 
