@@ -102,7 +102,3 @@ class Store(TextStore):
     def _skip_bags(self):
         return self.environ.get('tiddlyweb.config', {}).get(
                 'pkgstore.skip_bags', [])
-
-
-def init(config):
-    pass

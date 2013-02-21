@@ -8,7 +8,9 @@ from tiddlyweb.store import Store
 
 from tiddlyweb.store import StoreMethodNotImplemented, StoreError
 from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
+from tiddlyweb.model.user import User
 
 
 def setup_module(module):
@@ -43,6 +45,15 @@ def test_put_bag():
     wstore.put(bag)
     assert os.path.exists('testpackage/resources/store/bags/testone')
     assert os.path.isdir('testpackage/resources/store/bags/testone')
+
+
+def test_put_recipe():
+    recipe = Recipe('testone')
+    wstore.put(recipe)
+    assert os.path.exists('testpackage/resources/store/recipes/testone')
+    assert os.path.isfile('testpackage/resources/store/recipes/testone')
+    wstore.delete(recipe)
+    assert not os.path.exists('testpackage/resources/store/recipes/testone')
 
 
 def test_put_tiddler():
@@ -92,3 +103,29 @@ def test_skip_bags():
     assert len(list(bags)) == 2
     bags = rstore.list_bags()
     assert len(list(bags)) == 1
+
+
+def test_cover_write_and_readonly():
+    recipe = Recipe('testone')
+    wstore.put(recipe)
+    recipe2 = rstore.get(recipe)
+    assert recipe2.name == recipe.name
+    py.test.raises(StoreMethodNotImplemented, 'rstore.put(recipe)')
+    py.test.raises(StoreMethodNotImplemented, 'rstore.delete(recipe)')
+
+    bag = Bag('testone')
+    wstore.put(bag)
+    bag2 = rstore.get(bag)
+    assert bag2.name == bag.name
+    py.test.raises(StoreMethodNotImplemented, 'rstore.put(bag)')
+    py.test.raises(StoreMethodNotImplemented, 'rstore.delete(bag)')
+    wstore.delete(bag)
+    assert not os.path.exists('testpackage/resources/store/bags/testone')
+
+
+def test_user_not_supported():
+    user = User('me')
+
+    py.test.raises(StoreMethodNotImplemented, 'rstore.put(user)')
+    py.test.raises(StoreMethodNotImplemented, 'rstore.get(user)')
+    py.test.raises(StoreMethodNotImplemented, 'rstore.delete(user)')
