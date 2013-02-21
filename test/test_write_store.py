@@ -72,3 +72,23 @@ def test_get_tiddler():
 
     wstore.delete(tiddler)
     py.test.raises(StoreError, 'rstore.get(tiddler)')
+
+
+def test_skip_bags():
+    bag = Bag('skippedbag')
+    wstore.put(bag)
+    tiddler = Tiddler('thing', 'skippedbag')
+    wstore.put(tiddler)
+
+    config['pkgstore.skip_bags'] = ['skippedbag']
+
+    bag = wstore.get(Bag('skippedbag'))
+    py.test.raises(StoreError, 'rstore.get(Bag("skippedbag"))')
+
+    tiddler = wstore.get(Tiddler('thing', 'skippedbag'))
+    py.test.raises(StoreError, 'rstore.get(Tiddler("thing", "skippedbag"))')
+
+    bags = wstore.list_bags()
+    assert len(list(bags)) == 2
+    bags = rstore.list_bags()
+    assert len(list(bags)) == 1

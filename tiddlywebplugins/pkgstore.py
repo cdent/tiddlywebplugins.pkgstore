@@ -10,7 +10,8 @@ try:
 except ImportError:
         from tiddlywebplugins.utils import resource_filename
 
-from tiddlyweb.store import StoreMethodNotImplemented
+from tiddlyweb.store import (StoreMethodNotImplemented, NoBagError,
+        NoTiddlerError)
 from tiddlyweb.stores.text import Store as TextStore
 
 class Store(TextStore):
@@ -74,6 +75,33 @@ class Store(TextStore):
 
     def user_get(self, user):
         raise StoreMethodNotImplemented('store does not handle users')
+
+    def bag_get(self, bag):
+        bag = super(Store, self).bag_get(bag)
+        skip_bags = self._skip_bags()
+        if self.read_only and skip_bags:
+            if bag.name in skip_bags:
+                raise NoBagError('%s skipped by config' % bag.name)
+        return bag
+
+    def tiddler_get(self, tiddler):
+        tiddler = super(Store, self).tiddler_get(tiddler)
+        skip_bags = self._skip_bags()
+        if self.read_only and skip_bags:
+            if tiddler.bag in skip_bags:
+                raise NoTiddlerError('Bag %s skipped by config' % tiddler.bag)
+        return tiddler
+
+    def list_bags(self):
+        bags = super(Store, self).list_bags()
+        skip_bags = self._skip_bags()
+        if self.read_only and skip_bags:
+            return (bag for bag in bags if bag.name not in skip_bags)
+        return bags
+
+    def _skip_bags(self):
+        return self.environ.get('tiddlyweb.config', {}).get(
+                'pkgstore.skip_bags', [])
 
 
 def init(config):
