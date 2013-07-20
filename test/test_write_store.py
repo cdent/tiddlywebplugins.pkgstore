@@ -1,16 +1,15 @@
-
 import os
 import shutil
 import py.test
-from tiddlyweb.config import config
 
-from tiddlyweb.store import Store
-
-from tiddlyweb.store import StoreMethodNotImplemented, StoreError
 from tiddlyweb.model.bag import Bag
 from tiddlyweb.model.recipe import Recipe
 from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.model.user import User
+from tiddlyweb.store import Store, StoreMethodNotImplemented, StoreError
+from tiddlyweb.config import config
+
+from tiddlywebplugins.pkgstore import ReadOnlyError
 
 
 def setup_module(module):
@@ -78,8 +77,8 @@ def test_get_tiddler():
     tiddler = rstore.get(tiddler)
     assert tiddler.text == 'oh hi'
 
-    py.test.raises(StoreMethodNotImplemented, 'rstore.put(tiddler)')
-    py.test.raises(StoreMethodNotImplemented, 'rstore.delete(tiddler)')
+    py.test.raises(ReadOnlyError, 'rstore.put(tiddler)')
+    py.test.raises(ReadOnlyError, 'rstore.delete(tiddler)')
 
     wstore.delete(tiddler)
     py.test.raises(StoreError, 'rstore.get(tiddler)')
@@ -110,15 +109,15 @@ def test_cover_write_and_readonly():
     wstore.put(recipe)
     recipe2 = rstore.get(recipe)
     assert recipe2.name == recipe.name
-    py.test.raises(StoreMethodNotImplemented, 'rstore.put(recipe)')
-    py.test.raises(StoreMethodNotImplemented, 'rstore.delete(recipe)')
+    py.test.raises(ReadOnlyError, 'rstore.put(recipe)')
+    py.test.raises(ReadOnlyError, 'rstore.delete(recipe)')
 
     bag = Bag('testone')
     wstore.put(bag)
     bag2 = rstore.get(bag)
     assert bag2.name == bag.name
-    py.test.raises(StoreMethodNotImplemented, 'rstore.put(bag)')
-    py.test.raises(StoreMethodNotImplemented, 'rstore.delete(bag)')
+    py.test.raises(ReadOnlyError, 'rstore.put(bag)')
+    py.test.raises(ReadOnlyError, 'rstore.delete(bag)')
     wstore.delete(bag)
     assert not os.path.exists('testpackage/resources/store/bags/testone')
 
