@@ -5,7 +5,7 @@ tiddlers etc.
 
 import os
 
-try:    
+try:
         from pkg_resources import resource_filename
 except ImportError:
         from tiddlywebplugins.utils import resource_filename
@@ -13,6 +13,11 @@ except ImportError:
 from tiddlyweb.store import (StoreMethodNotImplemented, NoBagError,
         NoTiddlerError)
 from tiddlyweb.stores.text import Store as TextStore
+
+
+class ReadOnlyError(StoreMethodNotImplemented):
+    pass
+
 
 class Store(TextStore):
     """
@@ -39,32 +44,32 @@ class Store(TextStore):
 
     def recipe_put(self, recipe):
         if self.read_only:
-            raise StoreMethodNotImplemented('store is read only')
+            raise ReadOnlyError
         super(Store, self).recipe_put(recipe)
 
     def bag_put(self, bag):
         if self.read_only:
-            raise StoreMethodNotImplemented('store is read only')
+            raise ReadOnlyError
         super(Store, self).bag_put(bag)
 
     def tiddler_put(self, tiddler):
         if self.read_only:
-            raise StoreMethodNotImplemented('store is read only')
+            raise ReadOnlyError
         super(Store, self).tiddler_put(tiddler)
 
     def recipe_delete(self, recipe):
         if self.read_only:
-            raise StoreMethodNotImplemented('store is read only')
+            raise ReadOnlyError
         super(Store, self).recipe_delete(recipe)
 
     def bag_delete(self, bag):
         if self.read_only:
-            raise StoreMethodNotImplemented('store is read only')
+            raise ReadOnlyError
         super(Store, self).bag_delete(bag)
 
     def tiddler_delete(self, tiddler):
         if self.read_only:
-            raise StoreMethodNotImplemented('store is read only')
+            raise ReadOnlyError
         super(Store, self).tiddler_delete(tiddler)
 
     def user_put(self, user):
