@@ -6,9 +6,9 @@ tiddlers etc.
 import os
 
 try:
-        from pkg_resources import resource_filename
+    from pkg_resources import resource_filename
 except ImportError:
-        from tiddlywebplugins.utils import resource_filename
+    from tiddlywebplugins.utils import resource_filename
 
 from tiddlyweb.store import (StoreMethodNotImplemented, NoBagError,
         NoTiddlerError)
